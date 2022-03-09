@@ -22,6 +22,8 @@ import {sComponent} from 'react-scomponent'
 class myComponent extends sComponent {}
 ```
 
+Just make sure you preserve the `state` prop if you need to add to those.
+
 ### The component code:
 ```js
 
