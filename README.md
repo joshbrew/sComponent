@@ -22,9 +22,31 @@ If you update a state value on your component, it will update the corresponding 
 
 
 ### Just extend the sComponent as you would a normal react component!
-```js
-import {sComponent} from 'react-scomponent'
-class myComponent extends sComponent {}
+```jsx
+import {state, sComponent} from 'react-scomponent'
+class myComponent extends sComponent {
+    state = {
+        clicked:false
+    }
+    
+    onclicked() {
+        this.setState({clicked:!this.state.clicked})
+        
+        console.log(state.data)
+    }
+
+    render() { 
+        (
+            <div> 
+                <button onClick={this.onclicked}>Clickme</button>
+                {this.state.clicked && 
+                    <div> Clicked on! </div>
+                }
+            </div>
+            
+        )
+    }
+}
 ```
 
 Just make sure you preserve the `state` prop if you need to add to those. Else it defaults to the provided `state` object.
