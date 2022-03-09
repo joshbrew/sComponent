@@ -20,7 +20,6 @@ If you update a state value on your component, it will update the corresponding 
 ```js
 import {sComponent} from 'scomponent'
 class myComponent extends sComponent {}
-
 ```
 
 ### The component code:
