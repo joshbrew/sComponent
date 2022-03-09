@@ -10,7 +10,7 @@
 Mixes [`anotherstatemanager`](https://github.com/moothyknight/statemanager) functionality into React by wrapping the component's setState function in [React.Component](https://reactjs.org/docs/react-component.html) with the ability to setState on a shared global state object. 
 
 The benefits of this are:
-- Components don't require writing any extra logic to have cascading effects on components across your app, or to talk to external scripts subscribed to your shared state object.
+- Components don't require writing any extra logic to have cascading effects on components across your app, or to talk to external scripts subscribed to your shared state object. Just setState in the component as you would normally!
 - Makes a lot of react quality of life tools (e.g. routers, redux store) sort of irrelevant, write a whole app with just components and some state subscription logic.
 - Easy to cache the global state as JSON to save state on your components.
 
