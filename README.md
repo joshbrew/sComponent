@@ -1,5 +1,10 @@
 # sComponent
 
+![status](https://img.shields.io/npm/v/react-scomponent) 
+![downloads](https://img.shields.io/npm/dt/react-scomponent)
+![size](https://img.shields.io/github/size/moothyknight/sComponent/state.component.jsx)
+![lic](https://img.shields.io/npm/l/react-scomponent)
+
 `npm i react-scomponent`
 
 Mixes [`anotherstatemanager`](https://github.com/moothyknight/statemanager) functionality into React by wrapping the component's setState function in [React.Component](https://reactjs.org/docs/react-component.html) with the ability to setState on a shared global state object. 
