@@ -47,6 +47,12 @@ class myComponent extends sComponent {
         )
     }
 }
+
+state.subscribeTrigger('clicked',(res)=>{
+    console.log('clicked!');
+})
+
+
 ```
 
 Just make sure you preserve the `state` prop if you need to add to those. Else it defaults to the provided `state` object.
