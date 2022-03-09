@@ -30,7 +30,7 @@ import {StateManager} from 'anotherstatemanager'
 
 export const state = new StateManager({ }); //globally available state object
 
-//alt to linker. These components share their state with the global state, and changes propagate both directions with setState
+//These components share their state with the global state, and changes propagate both directions with setState
 export class sComponent extends Component {
 
     statemgr=state
