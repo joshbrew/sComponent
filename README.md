@@ -18,7 +18,7 @@ If you update a state value on your component, it will update the corresponding 
 
 ### Just extend the sComponent as you would a normal react component!
 ```js
-import {sComponent} from 'scomponent'
+import {sComponent} from 'react-scomponent'
 class myComponent extends sComponent {}
 ```
 
