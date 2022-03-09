@@ -1,0 +1,29 @@
+{
+  "name": "react-scomponent",
+  "version": "1.0.0",
+  "description": "React Component with a wrapped setState function to allow simpler component and cross-component scripting using my state manager library. ",
+  "main": "state.component.tsx",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moothyknight/scomponent.git"
+  },
+  "keywords": [
+    "state",
+    "component",
+    "react"
+  ],
+  "dependencies": {
+    "react":"^16.0.0",
+    "anotherstatemanager":"^1.1.0"
+  },
+  "author": "Joshua Brewster",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/moothyknight/scomponent/issues"
+  },
+  "homepage": "https://github.com/moothyknight/scomponent#readme"
+}
