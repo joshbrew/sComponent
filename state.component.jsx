@@ -35,6 +35,7 @@ export class sComponent extends Component {
         setTimeout(()=>{
             let found = {};
             for(const prop in this.state) { //for all props in state, subscribe to changes in the global state
+                if(prop in this.statemgr.data) found[prop] = this.statemgr.data[prop];
                 this.statemgr.subscribeTrigger(prop,(res)=>{
                     let c = this;
                     if(typeof c === 'undefined'){
