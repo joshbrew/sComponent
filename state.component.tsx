@@ -19,7 +19,6 @@ export class sComponent extends Component<{[key:string]:any}> {
 
     react_setState = this.setState.bind(this);
 
-
     constructor(
         props:{
             [key:string]:any,
@@ -44,12 +43,19 @@ export class sComponent extends Component<{[key:string]:any}> {
             }
         }
 
+        let found = {};
+        for(const prop in this.state) { //for all props in state, subscribe to changes in the global state
+            if(props?.doNotSubscribe && props.doNotSubscribe.indexOf(prop) > -1) continue;
+            if(prop in this.statemgr.data) found[prop] = this.statemgr.data[prop];
+        }
+        if(Object.keys(found).length > 0) {
+            Object.assign(this.state,found);
+        }
         setTimeout(()=>{
-            let found = {};
             for(const prop in this.state) { //for all props in state, subscribe to changes in the global state
                 if(props?.doNotSubscribe && props.doNotSubscribe.indexOf(prop) > -1) continue;
-                if(prop in this.statemgr.data) found[prop] = this.statemgr.data[prop]
-                this.state_subs[prop] = this.__subscribeComponent(prop);
+                if(prop in this.statemgr.data) found[prop] = this.statemgr.data[prop];
+                this.__subscribeComponent(prop);
             }
             if(Object.keys(found).length > 0) this.react_setState(found); //override defaults
         },0.001);
@@ -57,7 +63,7 @@ export class sComponent extends Component<{[key:string]:any}> {
     }
 
     __subscribeComponent(prop, onEvent?:(value)=>void) {
-        
+        console.log('subbing',prop);
         let sub = this.statemgr.subscribeEvent(prop,(res)=>{
             let c = this;
             if(typeof c === 'undefined') { //the class will be garbage collected by react and this will work to unsubscribe
@@ -74,6 +80,7 @@ export class sComponent extends Component<{[key:string]:any}> {
                 }
             }
         });
+        this.state_subs[prop] = sub;
 
         return sub;
 
@@ -84,7 +91,6 @@ export class sComponent extends Component<{[key:string]:any}> {
             for(const key in this.state_subs) {
                 this.statemgr.unsubscribeEvent(key, this.state_subs[key]);
             }
-        }
+        } else this.statemgr.unsubscribeEvent(prop, this.state_subs[prop]);
     }
-
 }
