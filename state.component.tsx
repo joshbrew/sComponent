@@ -63,7 +63,6 @@ export class sComponent extends Component<{[key:string]:any}> {
     }
 
     __subscribeComponent(prop, onEvent?:(value)=>void) {
-        console.log('subbing',prop);
         let sub = this.statemgr.subscribeEvent(prop,(res)=>{
             let c = this;
             if(typeof c === 'undefined') { //the class will be garbage collected by react and this will work to unsubscribe
