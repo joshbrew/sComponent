@@ -1,6 +1,5 @@
 //mini state event handler for arbitrary data event callback handling
 
-//a graph representing a callstack of nodes which can be arranged arbitrarily with forward and backprop or propagation to wherever
 export class EventHandler {
 
     data={} as {[key:string]:any}
@@ -110,7 +109,8 @@ export class EventHandler {
 
         return sub;
     }
-    getEvent = (key,sub) => {
+    getEvent = (key,sub?) => {
+        if(typeof sub !== 'number') return this.triggers[key];
         for(const s in this.triggers[key]) {
             if(this.triggers[key][s].sub === sub) return this.triggers[key][s];
         }

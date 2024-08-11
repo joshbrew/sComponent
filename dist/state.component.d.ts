@@ -1,19 +1,21 @@
 import { Component } from 'react';
 import { EventHandler } from './EventHandler';
 export declare const state: EventHandler;
-export declare class sComponent extends Component<{
-    [key: string]: any;
-}> {
-    statemgr: EventHandler;
-    state_subs: {};
-    UPDATED: any;
-    unique: string;
+export declare class sComponent<P = {} & {
+    state?: EventHandler;
+    doNotSubscribe?: string[];
+}, S = {}> extends Component<P, S> {
+    __statemgr: EventHandler;
+    __state_subs: {
+        [key: string]: number;
+    };
+    __updated: any[];
+    __unique: string;
     react_setState: any;
-    constructor(props?: {
-        [key: string]: any;
+    constructor(props?: P & {
         state?: EventHandler;
         doNotSubscribe?: string[];
     });
-    __subscribeComponent(prop: any, onEvent?: (value: any) => void): number | undefined;
-    __unsubscribeComponent(prop?: any): void;
+    __subscribeComponent(prop: string, onEvent?: (value: any) => void): number;
+    __unsubscribeComponent(prop?: string): void;
 }

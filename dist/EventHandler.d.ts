@@ -4,9 +4,9 @@ export declare class EventHandler {
     };
     triggers: {
         [key: string]: {
-            [key: string]: any;
             sub: number;
             onchange: Function;
+            [key: string]: any;
         }[];
     };
     ctr: number;
@@ -20,18 +20,22 @@ export declare class EventHandler {
     };
     setValue: (key: any, value: any) => void;
     triggerEvent: (key: any, value: any) => void;
-    subscribeState: (onchange: (res: any) => void) => number | undefined;
-    unsubscribeState: (sub: number) => true | undefined;
+    subscribeState: (onchange: (res: any) => void) => number;
+    unsubscribeState: (sub: number) => boolean;
     subscribeEvent: (key: string, onchange: (res: any) => void, refObject?: {
         [key: string]: any;
-    } | undefined, refKey?: string) => number | undefined;
-    unsubscribeEvent: (key: string, sub?: number) => true | undefined;
-    subscribeEventOnce: (key: string, onchange: (res: any) => void) => number | undefined;
-    getEvent: (key: any, sub: any) => {
+    }, refKey?: string) => number;
+    unsubscribeEvent: (key: string, sub?: number) => boolean;
+    subscribeEventOnce: (key: string, onchange: (res: any) => void) => any;
+    getEvent: (key: any, sub?: any) => {
         [key: string]: any;
         sub: number;
         onchange: Function;
-    } | undefined;
+    } | {
+        [key: string]: any;
+        sub: number;
+        onchange: Function;
+    }[];
     getSnapshot: () => void;
     onRemoved: (trigger: {
         sub: number;
