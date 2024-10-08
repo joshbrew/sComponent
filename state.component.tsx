@@ -7,12 +7,26 @@ export class sComponent<P = {} & {
     state?: EventHandler;
     doNotSubscribe?: string[]; // can skip certain props
 }, S = {}> extends Component<P, S> {
+
+    state={} as any;
+
     __statemgr = state as EventHandler;
     __state_subs: { [key: string]: number } = {};
     __updated: any[] = [];
     __unique = `component${Math.floor(Math.random() * 1000000000000000)}`;
 
+
+    //@ts-ignore
     react_setState = this.setState.bind(this);
+
+     
+    setState = (s: any) => {
+        this.__updated = Object.keys(s);
+        this.react_setState(s);
+        if (typeof s === 'object') {
+            this.__statemgr.setState(s); // now relay through event handler
+        }
+    }
 
     constructor(
         props: P & {
@@ -27,13 +41,6 @@ export class sComponent<P = {} & {
         if (props.state) // synced with global state
             this.__statemgr = props.state;
 
-        this.setState = (s: any) => {
-            this.__updated = Object.keys(s);
-            this.react_setState(s);
-            if (typeof s === 'object') {
-                this.__statemgr.setState(s); // now relay through event handler
-            }
-        };
 
         let found: Partial<S> = {};
         for (const prop in this.state) { // for all props in state, subscribe to changes in the global state

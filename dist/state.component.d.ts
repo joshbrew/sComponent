@@ -11,7 +11,8 @@ export declare class sComponent<P = {} & {
     };
     __updated: any[];
     __unique: string;
-    react_setState: any;
+    react_setState: (s: any) => void;
+    setState: (s: any) => void;
     constructor(props?: P & {
         state?: EventHandler;
         doNotSubscribe?: string[];
