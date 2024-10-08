@@ -31,7 +31,7 @@ export class sComponent<P = {} & {
             this.__updated = Object.keys(s);
             this.react_setState(s);
             if (typeof s === 'object') {
-                stateHandler.setState(s); // now relay through event handler
+                this.__statemgr.setState(s); // now relay through event handler
             }
         };
 
