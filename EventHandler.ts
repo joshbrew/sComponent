@@ -1,12 +1,35 @@
 //mini state event handler for arbitrary data event callback handling
 
+
 export class EventHandler {
 
     data={} as {[key:string]:any}
     triggers={} as {[key:string]:{sub:number,onchange:Function,[key:string]:any}[]}
     ctr = 0; //sub counter, always ensures unique values
-
-    constructor(data?:{[key:string]:any}) { if(typeof data === 'object') this.data = data; }
+    STATESUBKEY = '*s';
+    useLocalStorage=false;
+    
+    constructor(
+        data?:{[key:string]:any},
+        useLocalStorage?:boolean //persist between sessions?
+    ) { 
+        this.useLocalStorage = useLocalStorage;
+        if(typeof data === 'object') {
+            this.data = data; 
+            if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
+                for (const key in data) {
+                    const localStorageValue = globalThis.localStorage.getItem(key);
+                    if (localStorageValue !== null) {
+                        try {
+                            this.data[key] = JSON.parse(globalThis.localStorageValue);
+                        } catch {
+                            console.warn(`Could not parse localStorage value for key: ${key}`);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     setState = (updateObj:{[key:string]:any}) => {
         Object.assign(this.data, updateObj);
@@ -15,11 +38,17 @@ export class EventHandler {
         for (const prop of props) {
             this.triggerEvent(prop, this.data[prop]);
         }
-        if(this.triggers[statesubKey]) {
+        if(this.triggers[this.STATESUBKEY]) {
             let run = (fn) => { fn(updateObj); }
-            const l = this.triggers[statesubKey].length;
+            const l = this.triggers[this.STATESUBKEY].length;
             for (let i = l - 1; i >= 0; i--) {
-                run(this.triggers[statesubKey][i].onchange); //go in reverse in case a trigger pops
+                run(this.triggers[this.STATESUBKEY][i].onchange); //go in reverse in case a trigger pops
+            }
+        }
+
+        if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
+            for (const key in updateObj) {
+                globalThis.localStorage.setItem(key, JSON.stringify(updateObj[key]));
             }
         }
         
@@ -28,6 +57,11 @@ export class EventHandler {
     setValue = (key, value) => {
         this.data[key] = value;
         this.triggerEvent(key,value);
+
+        // Update local storage if enabled
+        if (this.useLocalStorage) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
     }
     triggerEvent = (key, value) => {
         if(this.triggers[key]) {
@@ -39,10 +73,10 @@ export class EventHandler {
         }
     }
     subscribeState = (onchange:(res:any)=>void) => { 
-        return this.subscribeEvent(statesubKey, onchange);
+        return this.subscribeEvent(this.STATESUBKEY, onchange);
     }
     unsubscribeState = (sub:number) => { 
-        return this.unsubscribeEvent(statesubKey, sub);
+        return this.unsubscribeEvent(this.STATESUBKEY, sub);
     }
     subscribeEvent = (key:string,onchange:(res:any)=>void, refObject?:{[key:string]:any}, refKey?:string) => {
         if(key) {
@@ -80,12 +114,14 @@ export class EventHandler {
             }
             else {
                 let idx = undefined;
-                let obj = triggers.find((o,i)=>{
+                let findFn = (o,i)=>{
                     if(o.sub===sub) {
                         idx = i;
                         return true;
                     }
-                });
+                }
+
+                let obj = triggers.find(findFn);
 
                 if(obj) triggers.splice(idx,1);
                 if(Object.keys(triggers).length === 0) {
@@ -122,7 +158,23 @@ export class EventHandler {
         }
     }
     onRemoved:(trigger:{sub:number, onchange:Function})=>void;
+    updateLocalStorage() {
+        if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
+            for (const key in this.data) {
+                globalThis.localStorage.setItem(key, JSON.stringify(this.data[key]));
+            }
+        }
+    }
+    restoreLocalStorage(data=this.data) {
+        if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
+            for (const key in data) {
+                let item = localStorage.getItem(key);
+                if(item !== null) {
+                    this.data[key] = JSON.parse(item);
+                }
+            }
+        }
+    }
 }
 
-let statesubKey = '*s';
 
