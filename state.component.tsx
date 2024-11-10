@@ -87,4 +87,8 @@ export class sComponent<P = {} & {
             }
         } else this.__statemgr.unsubscribeEvent(prop, this.__state_subs[prop]);
     }
+
+    __setUseLocalStorage(bool:boolean) {
+        this.__statemgr.useLocalStorage = bool;
+    }   
 }
