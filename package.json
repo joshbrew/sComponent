@@ -1,6 +1,6 @@
 {
   "name": "react-scomponent",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Barebones esbuild and test node server implementation. For building",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -22,7 +22,7 @@
     "esbuild"
   ],
   "author": "",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "devDependencies": {
     "react": "*"
   },

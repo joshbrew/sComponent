@@ -1,155 +1,243 @@
-# sComponent
+# react-scomponent
 
-![status](https://img.shields.io/npm/v/react-scomponent) 
-![downloads](https://img.shields.io/npm/dt/react-scomponent)
-![size](https://img.shields.io/github/size/moothyknight/sComponent/state.component.jsx)
-![lic](https://img.shields.io/npm/l/react-scomponent)
+A lightweight state management library for React that provides a simple event-driven approach to managing and synchronizing state across components. `react-scomponent` introduces an `EventHandler` class for global state management and an `sComponent` class that extends React components to seamlessly integrate with the global state.
 
-`npm i react-scomponent`
+## Table of Contents
 
-Mixes [`anotherstatemanager`](https://github.com/moothyknight/statemanager) functionality into React by wrapping the component's setState function in [React.Component](https://reactjs.org/docs/react-component.html) with the ability to setState on a shared global state object. 
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+  - [EventHandler](#eventhandler)
+  - [sComponent](#scomponent)
+- [API Reference](#api-reference)
+  - [EventHandler Class](#eventhandler-class)
+  - [sComponent Class](#scomponent-class)
+- [Examples](#examples)
+  - [Counter Example](#counter-example)
+- [Contributing](#contributing)
+- [License](#license)
 
-The benefits of this are:
-- Components don't require writing any extra logic to have cascading effects on components across your app, or to talk to external scripts subscribed to your shared state object. Just setState in the component as you would normally!
-- Makes a lot of react quality of life tools (e.g. routers, redux store) sort of irrelevant, write a whole app with just components and some state subscription logic.
-- Easy to cache the global state as JSON to save state on your components.
+## Introduction
 
-You can create new state objects and pass them as props otherwise a default `state` can be imported. The component always updates its render first then sets state on the shared object. 
+`react-scomponent` is a minimalistic state management library designed to simplify state handling in React applications. It leverages an event-driven model to allow components to subscribe to state changes, ensuring that your UI stays in sync with your data without the complexity of larger state management solutions like Redux or MobX.
 
-The state object will check on frame for updates to its own values or can be triggered immediately with state.setState({etc:'etc..'}). 
+## Features
 
-If you update a state value on your component, it will update the corresponding state value on the shared state object so it will be propagated automatically to other components or wherever else in your script.
+- **Event-Driven State Management**: Subscribe to specific state changes and react accordingly.
+- **Global State Synchronization**: Share state across components without prop drilling.
+- **Local Storage Integration**: Optionally persist state between sessions using `localStorage`.
+- **Lightweight and Simple**: Minimal overhead and easy to integrate into existing projects.
 
+## Installation
 
-### Just extend the sComponent as you would a normal react component!
-```jsx
-import {state, sComponent} from 'react-scomponent'
-class myComponent extends sComponent {
-    state = {
-        clicked:false
-    }
-    
-    onclicked() {
-        this.setState({clicked:!this.state.clicked})
-        
-        console.log(state.data)
-    }
+You can install `react-scomponent` via npm:
 
-    render() { 
-        (
-            <div> 
-                <button onClick={this.onclicked}>Clickme</button>
-                {this.state.clicked && 
-                    <div> Clicked on! </div>
-                }
-            </div>
-            
-        )
-    }
-}
-
-state.subscribeTrigger('clicked',(res)=>{
-    console.log('clicked!');
-})
-
-
+```bash
+npm install react-scomponent
 ```
 
-Just make sure you preserve the `state` prop if you need to add to those. Else it defaults to the provided `state` object.
+Or using yarn:
 
-### The component code:
-```js
+```bash
+yarn add react-scomponent
+```
 
-import { Component } from 'react'
-import {StateManager} from 'anotherstatemanager'
+## Getting Started
 
-export const state = new StateManager({ }); //globally available state object
+### EventHandler
 
-//These components share their state with the global state, and changes propagate both directions with setState
-export class sComponent extends Component {
+The `EventHandler` class manages global state and allows components to subscribe to changes in specific state properties.
 
-    statemgr=state
-    UPDATED=[]
+#### Importing EventHandler
 
-    constructor(
-        props={
-            state:state //can apply a new state other than the global state so you can have states for certain pages for example
-        }
-    ) {
-        super(props);
+```javascript
+import { EventHandler } from 'react-scomponent';
+```
 
-        if(props.state)
-            this.statemgr = props.state;
+#### Creating an EventHandler Instance
 
-        //lets overload setState
-        let react_setState = this.setState.bind(this);
-        
-        this.setState = (s={}) => {
+You can create a new instance of `EventHandler` to manage your application's state:
 
-            this.UPDATED = Object.keys(s);
-            react_setState(s);
-            if(typeof s === 'object') {            
-               state.setState(s); //now relay through statemanager
-            }
-        }
+```javascript
+const state = new EventHandler({
+  count: 0,
+}, true); // The second parameter enables localStorage persistence
+```
 
-        //so this runs AFTER the inherited constructor
-        setTimeout(()=>{
-            let found = {};
-            for(const prop in this.state) { //for all props in state, subscribe to changes in the global state
-                this.statemgr.subscribeTrigger(prop,(res)=>{
-                    let c = this;
-                    if(typeof c === 'undefined'){
-                        this.statemgr.unsubscribeTrigger(prop);
-                    }
-                    else {
-                        let wasupdated = this.UPDATED.indexOf(prop);
-                        if( wasupdated > -1) {
-                            this.UPDATED.splice(wasupdated,1);
-                        }
-                        else {
-                             react_setState({[prop]:res});//only updates one prop at a time rn
-                        }
-                    }
-                });
-            }
-            if(Object.keys(found).length > 0) react_setState(found); //override defaults
-        },0.001);
-        
-    }
+- **Parameters:**
+  - `data` (optional): An object containing initial state values.
+  - `useLocalStorage` (optional): A boolean indicating whether to persist state in `localStorage`.
 
+### sComponent
+
+The `sComponent` class extends `React.Component` and integrates with the `EventHandler` to automatically synchronize component state with the global state.
+
+#### Importing sComponent
+
+```javascript
+import { sComponent } from 'react-scomponent';
+```
+
+#### Creating an sComponent
+
+```javascript
+class Counter extends sComponent {
+  state = {
+    count: 0,
+  };
+
+  //__statemgr = state //you can also override the default state manager with your own, e.g. to make separate state objects.
+
+  // Your component logic...
 }
 ```
 
+By extending `sComponent`, your component automatically subscribes to changes in the global state properties that match its local `state` keys.
 
-### StateManager example code:
-```js
+## API Reference
 
-import {StateManager} from 'anotherstatemanager'
+### EventHandler Class
 
-let state = new StateManager(
-    {x:1}
-    "FRAMERATE" //or 1000 (ms) etc.
-    true //start the subscription loops automatically? False to just use the trigger state
+#### Methods
+
+- **`constructor(data?, useLocalStorage?)`**
+  - Initializes the state with the provided data and sets up localStorage if enabled.
+- **`setState(updateObj)`**
+  - Merges the `updateObj` into the current state and triggers events for changed properties.
+- **`setValue(key, value)`**
+  - Sets a single state property and triggers its event.
+- **`subscribeEvent(key, onchange)`**
+  - Subscribes to changes of a specific state property.
+- **`unsubscribeEvent(key, sub?)`**
+  - Unsubscribes from a state property change event.
+- **`subscribeState(onchange)`**
+  - Subscribes to all state changes.
+- **`unsubscribeState(sub)`**
+  - Unsubscribes from the state change subscription.
+- **`getSnapshot()`**
+  - Returns a shallow copy of the current state.
+- **`updateLocalStorage()`**
+  - Manually updates the `localStorage` with the current state.
+- **`restoreLocalStorage(data?)`**
+  - Restores state from `localStorage`.
+
+#### Properties
+
+- **`data`**
+  - The internal state object.
+- **`useLocalStorage`**
+  - A boolean indicating if `localStorage` is used.
+- **`onRemoved`**
+  - A callback function invoked when a trigger is removed.
+
+### sComponent Class
+
+#### Methods
+
+- **`constructor(props)`**
+  - Initializes the component and subscribes to state changes.
+- **`setState(s)`**
+  - Overrides React's `setState` to synchronize with the global state.
+- **`__subscribeComponent(prop, onEvent?)`**
+  - Subscribes the component to a specific state property.
+- **`__unsubscribeComponent(prop?)`**
+  - Unsubscribes the component from state property changes.
+- **`__setUseLocalStorage(bool)`**
+  - Enables or disables `localStorage` usage.
+
+#### Usage Notes
+
+- The `sComponent` automatically subscribes to state properties that match its own state keys.
+- Use `doNotSubscribe` in `props` to exclude specific state properties from automatic subscription.
+
+## Examples
+
+### Counter Example
+
+#### Setting Up the Global State
+
+```javascript
+// state.js
+import { EventHandler } from 'react-scomponent';
+
+export const state = new EventHandler({
+  count: 0,
+}, true);
+```
+
+#### Creating the Counter Component
+
+```javascript
+// Counter.js
+import React from 'react';
+import { sComponent, state } from 'react-scomponent';
+
+export class Counter extends sComponent {
+  state = {
+    count: 0,
+  };
+
+  componentDidMount() {
+    setTimeout(()=>{
+        this.setState({ count: 1 });
+    },1000)
+  }
+
+  increment = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  decrement = () => {
+    this.setState({ count: this.state.count - 1 });
+  };
+
+  render() {
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.increment}>Increment</button>
+        <button onClick={this.decrement}>Decrement</button>
+      </div>
     );
+  }
+}
 
-let sub = state.subscribe('x',(newx) => {console.log(newx);});
+//subscribe in the script anywhere, and it will be synchronized with all sComponents tied to that state object
+state.subscribeEvent('count',(ct)=>{
+    console.log("Count: " + ct);
+});
 
+//e.g. you can interact with the state anywhere and propagate to components
+setInterval(()=>{
+    state.setState({ count: this.state.count + 1 });
+},1000)
 
-let sub = state.subscribe(key,onchange); //triggers changes on frame
-state.unsubsribe(sub); //pass the key you received from .subscribe to remove the function
-state.subscribeOnce(key,onchange);
-
-let subt = state.subscribeTrigger(key,onchange); //fire the function when you setState, these run independent of the interval based functions so you can have on-demand functions and on-frame/interval functions
-state.unsubscribeTrigger(subt); //pass the key you received from .subscribe to remove the function
-state.subscribeTriggerOnce(key,onchange);
-
-let subs = state.subsribeSequential(key,onchange); //this is a sequence state manager so it fires on the update interval and for each update pushed between the update periods e.g. tallying key inputs. This won't relate to the state component by default.
-state.unsubscribeSequential(sub);
-state.subscribeSequentialOnce(key,onchange);
-//...
-
-state.setState({x:3});
-state.setState({...keys:values});
 
 ```
+
+#### Using the Counter Component
+
+```javascript
+// App.js
+import React from 'react';
+import { Counter } from './Counter';
+
+function App() {
+  return (
+    <div>
+      <h1>Counter Example</h1>
+      <Counter />
+    </div>
+  );
+}
+
+export default App;
+```
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
