@@ -15,10 +15,8 @@ export class sComponent<P = {} & {
     __updated: any[] = [];
     __unique = `component${Math.floor(Math.random() * 1000000000000000)}`;
 
-
     //@ts-ignore
     react_setState = this.setState.bind(this);
-
      
     setState = (s: any) => {
         this.__updated = Object.keys(s);
@@ -50,6 +48,11 @@ export class sComponent<P = {} & {
         if (Object.keys(found).length > 0) {
             Object.assign(this.state, found);
         }
+
+        if(this.__statemgr.useLocalStorage) {
+            this.__restoreLocalStorage();
+        }
+        
         setTimeout(() => {
             for (const prop in this.state) { // for all props in state, subscribe to changes in the global state
                 if (props?.doNotSubscribe && props.doNotSubscribe.indexOf(prop) > -1) continue;
@@ -88,7 +91,16 @@ export class sComponent<P = {} & {
         } else this.__statemgr.unsubscribeEvent(prop, this.__state_subs[prop]);
     }
 
+    //should only have to run this on a parent component then the others will restore their state.
     __setUseLocalStorage(bool:boolean) {
         this.__statemgr.useLocalStorage = bool;
+        this.__restoreLocalStorage();
     }   
+
+    __restoreLocalStorage() {
+        let result = this.__statemgr.restoreLocalStorage(Object.keys(this.state));
+        if(result) {
+            Object.assign(this.state,result);
+        }
+    }
 }

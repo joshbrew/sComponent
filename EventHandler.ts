@@ -158,22 +158,27 @@ export class EventHandler {
         }
     }
     onRemoved:(trigger:{sub:number, onchange:Function})=>void;
-    updateLocalStorage() {
+    updateLocalStorage(data=this.data) {
         if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
-            for (const key in this.data) {
-                globalThis.localStorage.setItem(key, JSON.stringify(this.data[key]));
+            for (const key in data) {
+                globalThis.localStorage.setItem(key, JSON.stringify(data[key]));
             }
         }
     }
-    restoreLocalStorage(data=this.data) {
-        if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
-            for (const key in data) {
+    restoreLocalStorage(keys=Object.keys(this.data)) {
+        if (typeof globalThis.localStorage !== 'undefined') {
+            let restored = {};
+            for (const key of keys) {
                 let item = localStorage.getItem(key);
                 if(item !== null) {
-                    this.data[key] = JSON.parse(item);
+                    restored[key] = JSON.parse(item);
+                    if(restored[key] !== this.data[key]) {
+                        this.data[key] = restored[key];
+                    }
                 }
             }
-        }
+            return restored;
+        } else throw new Error("Storage Not Enabled");
     }
 }
 

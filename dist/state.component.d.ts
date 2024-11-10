@@ -21,4 +21,5 @@ export declare class sComponent<P = {} & {
     __subscribeComponent(prop: string, onEvent?: (value: any) => void): number;
     __unsubscribeComponent(prop?: string): void;
     __setUseLocalStorage(bool: boolean): void;
+    __restoreLocalStorage(): void;
 }
