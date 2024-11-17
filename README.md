@@ -15,6 +15,7 @@ A lightweight state management library for React that provides a simple event-dr
   - [sComponent Class](#scomponent-class)
 - [Examples](#examples)
   - [Counter Example](#counter-example)
+- [Components Documentation](#components-documentation)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -212,8 +213,6 @@ state.subscribeEvent('count',(ct)=>{
 setInterval(()=>{
     state.setState({ count: this.state.count + 1 });
 },1000)
-
-
 ```
 
 #### Using the Counter Component
@@ -235,9 +234,13 @@ function App() {
 export default App;
 ```
 
+## Components Documentation
+
+For a detailed breakdown of each component and its use cases, refer to [./components.md](./components.md).
+
+This file provides in-depth documentation for components like `StateAccordion`, `StateButton`, `StateCheckbox`, and more, explaining their purposes, features, and code examples.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
