@@ -2,6 +2,8 @@
 
 A lightweight state management library for React that provides a simple event-driven approach to managing and synchronizing state across components. `react-scomponent` introduces an `EventHandler` class for global state management and an `sComponent` class that extends React components to seamlessly integrate with the global state.
 
+Best practice is to import the uncompiled files in your project so they compile with your version of react, else they're on the latest 18.6.1 build in the compilation. E.g. copy the EventHandler.ts and state.component.tsx files into your project or just import the files from the node_modules folder rather than importing from 'react-scomponent' as that targets a compilation.
+
 ## Table of Contents
 
 - [Introduction](#introduction)
