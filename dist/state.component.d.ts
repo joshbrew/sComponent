@@ -12,11 +12,11 @@ export declare class sComponent<P extends {
     __updated: string[];
     __unique: string;
     __doNotBroadcast?: string[];
-    /**
-     * Promise-based setState that relays once to your EventHandler,
-     * and now also supports functional updaters + optional callbacks.
-     */
     [key: string]: any;
+    /**
+ * Promise-based setState that relays once to your EventHandler,
+ * and now also supports functional updaters + optional callbacks.
+ */
     setState(partialState: Partial<S> | ((prevState: Readonly<S>) => Partial<S>), callback?: () => void): Promise<void>;
     constructor(props?: P & {
         state?: EventHandler;
