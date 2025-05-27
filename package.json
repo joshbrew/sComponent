@@ -1,6 +1,6 @@
 {
   "name": "react-scomponent",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Barebones esbuild and test node server implementation. For building",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",

@@ -3,13 +3,15 @@ import { EventHandler } from './EventHandler';
 export declare const state: EventHandler;
 export declare class sComponent<P extends {
     state?: EventHandler;
-    doNotSubscribe?: string[];
+    doNotBroadcast?: string[];
+    [key: string]: any;
 } = {}, S extends Record<string, any> = {}> extends Component<P, S> {
     state: any;
     __statemgr: EventHandler;
     __state_subs: Record<string, number>;
     __updated: string[];
     __unique: string;
+    __doNotBroadcast?: string[];
     /**
  * Promise-based setState that relays once to your EventHandler,
  * and now also supports functional updaters + optional callbacks.
@@ -17,7 +19,7 @@ export declare class sComponent<P extends {
     setState(partialState: Partial<S> | ((prevState: Readonly<S>) => Partial<S>), callback?: () => void): Promise<void>;
     constructor(props?: P & {
         state?: EventHandler;
-        doNotSubscribe?: string[];
+        doNotBroadcast?: string[];
     });
     /**
      * Subscribe to a single state property
