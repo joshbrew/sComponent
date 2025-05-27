@@ -43,8 +43,6 @@ export declare class EventHandler {
         sub: number;
         onchange: Function;
     }) => void;
-    updateLocalStorage(data?: {
-        [key: string]: any;
-    }): void;
+    updateLocalStorage(): void;
     restoreLocalStorage(keys?: string[]): {};
 }

@@ -13,7 +13,7 @@ export class EventHandler {
         data?:{[key:string]:any},
         useLocalStorage?:boolean //persist between sessions?
     ) { 
-        this.useLocalStorage = useLocalStorage;
+        if(useLocalStorage) this.useLocalStorage = useLocalStorage;
         if(typeof data === 'object') {
             this.data = data; 
             if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
@@ -113,7 +113,7 @@ export class EventHandler {
                 delete this.data[key]; //garbage collect useless data
             }
             else {
-                let idx = undefined;
+                let idx = undefined as any;
                 let findFn = (o,i)=>{
                     if(o.sub===sub) {
                         idx = i;
@@ -121,7 +121,7 @@ export class EventHandler {
                     }
                 }
 
-                let obj = triggers.find(findFn);
+                let obj = triggers.find(findFn) as any;
 
                 if(obj) triggers.splice(idx,1);
                 if(Object.keys(triggers).length === 0) {
@@ -158,13 +158,14 @@ export class EventHandler {
         }
     }
     onRemoved:(trigger:{sub:number, onchange:Function})=>void;
-    updateLocalStorage(data=this.data) {
+    updateLocalStorage() {
         if (this.useLocalStorage && typeof globalThis.localStorage !== 'undefined') {
-            for (const key in data) {
-                globalThis.localStorage.setItem(key, JSON.stringify(data[key]));
+            for (const key in this.data) {
+                globalThis.localStorage.setItem(key, JSON.stringify(this.data[key]));
             }
         }
     }
+    
     restoreLocalStorage(keys=Object.keys(this.data)) {
         if (typeof globalThis.localStorage !== 'undefined') {
             let restored = {};

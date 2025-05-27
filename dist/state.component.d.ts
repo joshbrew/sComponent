@@ -11,9 +11,10 @@ export declare class sComponent<P extends {
     __updated: string[];
     __unique: string;
     /**
-     * Promise-based setState that relays once to your EventHandler
-     */
-    setState(partialState: Partial<S>, callback?: () => void): Promise<void>;
+ * Promise-based setState that relays once to your EventHandler,
+ * and now also supports functional updaters + optional callbacks.
+ */
+    setState(partialState: Partial<S> | ((prevState: Readonly<S>) => Partial<S>), callback?: () => void): Promise<void>;
     constructor(props?: P & {
         state?: EventHandler;
         doNotSubscribe?: string[];
