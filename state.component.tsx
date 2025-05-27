@@ -4,7 +4,7 @@ import { EventHandler } from './EventHandler';
 export const state = new EventHandler(); // import this anywhere for direct manipulation of state components from script
 
 export class sComponent<
-    P extends { state?: EventHandler; doNotBroadcast?: string[], [key:string]:any } = {},
+    P extends { state?: EventHandler; doNotBroadcast?: string[], [key: string]: any } = {},
     S extends Record<string, any> = {}
 > extends Component<P, S> {
     // React-managed state
@@ -21,12 +21,16 @@ export class sComponent<
 
     // Unique identifier for debugging or DOM-keying
     __unique = `component${Math.floor(Math.random() * 1e15)}`;
-    __doNotBroadcast?:string[];
+    __doNotBroadcast?: string[];
 
     /**
- * Promise-based setState that relays once to your EventHandler,
- * and now also supports functional updaters + optional callbacks.
- */
+     * Promise-based setState that relays once to your EventHandler,
+     * and now also supports functional updaters + optional callbacks.
+     */
+
+
+    [key: string]: any;
+    
     //@ts-ignore
     setState(
         partialState:
