@@ -12,9 +12,11 @@ export declare class EventHandler {
     ctr: number;
     STATESUBKEY: string;
     useLocalStorage: boolean;
+    localStorageKeys?: string[];
     constructor(data?: {
         [key: string]: any;
-    }, useLocalStorage?: boolean);
+    }, useLocalStorage?: boolean, //persist between sessions?
+    localStorageKeys?: string[]);
     setState: (updateObj: {
         [key: string]: any;
     }) => {
@@ -43,6 +45,6 @@ export declare class EventHandler {
         sub: number;
         onchange: Function;
     }) => void;
-    updateLocalStorage(): void;
+    updateLocalStorage(keys?: string[]): void;
     restoreLocalStorage(keys?: string[]): {};
 }
